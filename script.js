@@ -2,21 +2,34 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 canvas.width = 800;
 canvas.height = 500;
+ctx.imageSmoothingEnabled = true;
+ctx.imageSmoothingQuality = "high";
+
+let fps, fpsInterval, startTime, now, then, elapsed;
+let ground = canvas.height - 120;
 
 const keys = [];
 
 const player = {
-    //frameX * width = sprite on frameX row
-    //frameY * height = sprite on frameY row
     x: 200,
-    y: 200,
+    y: ground,
     width: 40, // width = image width / sprites in column: 160 / 4 = 40
     height: 72, // height = image height / sprites in row: 288 /4 = 72
     frameX: 0,
     frameY: 0,
     speed: 9,
-    moving: false
+    mass: 1,
+    moving: false,
+    jumped: false,
+    inAir: false,
+    falling: false,
+    onGround: true
 };
+
+// const world = {
+//     gravity: -9.8,
+//     players: [new player]
+// }
 
 const playerSprite = new Image();
 playerSprite.src = "chewie.png";
@@ -26,16 +39,15 @@ background.src = "background.jpg";
 
 /**
  * @function drawSprite
- *
- * @param {image} img
- * @param {crop image start position X} sX
- * @param {crop image start position Y} sY
- * @param {crop end position X} sW
- * @param {crop end position Y} sH
- * @param {place on canvas start position X} dX
- * @param {place on canvas start position Y} dY
- * @param {place on canvas end position X} dW
- * @param {place on canvas end position Y} dH
+ * @param {HTMLImageElement} img
+ * @param {int} sX
+ * @param {int} sY
+ * @param {int} sW
+ * @param {int} sH
+ * @param {int} dX
+ * @param {int} dY
+ * @param {int} dW
+ * @param {int} dH
  */
 
 function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
@@ -44,12 +56,44 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
 
 
 
+/**                     Physics                              */
 
+var mass = 1;
+var aceleration = 9.8;
+var force = mass * aceleration;
 
-// setInterval(function())
+function jump() {
+    player.y += player.speed
+    player.inAir = true;
+    player.onGround = false;
+}
 
+function doubleJump() {
+    player.y += player.speed
+}
+
+function fall() {
+    player.y -= player.mass
+}
+
+function onGround() {
+    player.onGround = true;
+    player.falling = false;
+}
+/**
+ *
+ * onGround
+ * jumped
+ * inAir
+ * falling
+ *
+ *
+ */
+
+/**                     EVENT LISTENER                       */
 window.addEventListener("keydown", e => {
      keys[e.key] = true;
+     console.log(keys);
     //  player.moving = true;
 });
 
@@ -59,17 +103,19 @@ window.addEventListener("keyup", e => {
 });
 
 function movePlayer() {
-    if (keys["ArrowUp"] && player.y > 100) {
+    if (keys["ArrowUp"] || keys[" "] && player.y > 0) {
         player.y -= player.speed;
         player.frameY = 3;
+        player.jumped = true;
         player.moving = true;
     }
-    if (keys["ArrowDown"] && player.y < canvas.height - player.height) {
-        player.y += player.speed;
-        player.frameY = 0;
-        player.moving = true;
+
+    if (keys["ArrowDown"] && player.y < canvas.height - player.height - 50) {
+        // player.y += player.speed;
+        // player.frameY = 0;
+        // player.moving = true;
     }
-    if (keys["ArrowLeft"] && player.x > 10) {
+    if (keys["ArrowLeft"] && player.x > 0) {
         player.x -= player.speed;
         player.frameY = 1;
         player.moving = true;
@@ -81,13 +127,13 @@ function movePlayer() {
     }
 }
 
+
+/**                         ANIMATION                          */
+
 function handlePlayerFrame() {
     if (player.frameX < 3 && player.moving) player.frameX++
     else player.frameX = 0;
 }
-
-
-let fps, fpsInterval, startTime, now, then, elapsed;
 
 function startAnimating(fps) {
     fpsInterval = 1000 / fps;
