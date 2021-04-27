@@ -6,18 +6,24 @@ ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = "high";
 
 let fps, fpsInterval, startTime, now, then, elapsed;
-let ground = canvas.height - 120;
+let spriteSheetWidth = 160;
+let spriteSheetHeight = 288;
+let spriteCol = 4;
+let spriteRow = 4;
+
+const ground = canvas.height - 120;
+const aceleration = 9.81;
 
 const keys = [];
 
 const player = {
     x: 200,
     y: ground,
-    width: 40, // width = image width / sprites in column: 160 / 4 = 40
-    height: 72, // height = image height / sprites in row: 288 /4 = 72
+    width: spriteSheetWidth / spriteCol, // width = image width / sprites in column: 160 / 4 = 40
+    height: spriteSheetHeight / spriteRow, // height = image height / sprites in row: 288 / 4 = 72
     frameX: 0,
     frameY: 0,
-    speed: 9,
+    speed: 0,
     mass: 1,
     moving: false,
     jumped: false,
@@ -58,37 +64,77 @@ function drawSprite(img, sX, sY, sW, sH, dX, dY, dW, dH) {
 
 /**                     Physics                              */
 
-var mass = 1;
-var aceleration = 9.8;
-var force = mass * aceleration;
 
-function jump() {
-    player.y += player.speed
-    player.inAir = true;
-    player.onGround = false;
-}
+// function jump() {
+//     player.y -= player.speed * 10;
+//     player.inAir = true;
+//     player.onGround = false;
+//     player.jumped = false;
+// }
 
-function doubleJump() {
-    player.y += player.speed
-}
+// function doubleJump() {
+//     player.y += player.speed;
+// }
 
-function fall() {
-    player.y -= player.mass
-}
+// function fall() {
+//     if (player.y < ground) {
+//         player.y += (player.mass * aceleration * elapsed);
+//     }
+//     else {
+//         player.y = ground;
+//         player.onGround = true;
+//         player.inAir = false;
 
-function onGround() {
-    player.onGround = true;
-    player.falling = false;
-}
+//     }
+// }
+
+// function onGround() {
+//     player.onGround = true;
+//     player.falling = false;
+// }
+
 /**
  *
- * onGround
- * jumped
- * inAir
- * falling
- *
+ * onGround:
+ *      jump = false
+ *      inAir = false
+ *      falling = false
+ *      //running = false
+ *      arrowUp:
+ *          jump()
+ * inAir:
+ *      arrowUp:
+ *          doubleJump()
+ *      falling()
  *
  */
+
+var mag = 9.81;
+function changeHeight() {
+    player.speed -= (mag * elapsed);
+    player.y -= (player.speed * elapsed);
+
+    if (player.y <= ground) {
+        player.speed = 0;
+        player.air = false;
+        player.ground = false;
+    }
+}
+
+function increaseVelocity() {
+    if (player.onGround) { //single jump
+        player.air = true;
+        player.onGround = false;
+        player.jumped = true;
+        player.speed += 9; // change hard code
+    }
+    else if (player.inAir && player.jumped) { //double jump
+        player.jumped = false;
+        player.speed += 9;
+    }
+}
+
+
 
 /**                     EVENT LISTENER                       */
 window.addEventListener("keydown", e => {
@@ -103,39 +149,44 @@ window.addEventListener("keyup", e => {
 });
 
 function movePlayer() {
-    if (keys["ArrowUp"] || keys[" "] && player.y > 0) {
-        player.y -= player.speed;
+    if ((keys["ArrowUp"] || keys[" "]) && player.y >= 0) {
+        // player.y -= player.speed;
+        increaseVelocity();
         player.frameY = 3;
+
+        player.moving = true;
         player.jumped = true;
+    }
+    if (keys["ArrowDown"] && player.y < ground) {
+        player.y += player.speed;
+        player.frameY = 0;
         player.moving = true;
     }
-
-    if (keys["ArrowDown"] && player.y < canvas.height - player.height - 50) {
-        // player.y += player.speed;
-        // player.frameY = 0;
-        // player.moving = true;
-    }
-    if (keys["ArrowLeft"] && player.x > 0) {
+    if (keys["ArrowLeft"] && player.x >= 0) {
         player.x -= player.speed;
         player.frameY = 1;
         player.moving = true;
     }
-    if (keys["ArrowRight"] && player.x < canvas.width - player.width) {
+    if (keys["ArrowRight"] && player.x <= canvas.width - player.width) {
         player.x += player.speed
         player.frameY = 2;
         player.moving = true;
     }
 }
 
+/**                         PLATFORM                            */
+
+
+
 
 /**                         ANIMATION                          */
 
 function handlePlayerFrame() {
-    if (player.frameX < 3 && player.moving) player.frameX++
+    if (player.frameX < spriteRow - 1 && player.moving) player.frameX++
     else player.frameX = 0;
 }
 
-function startAnimating(fps) {
+function gameLoop(fps) {
     fpsInterval = 1000 / fps;
     then = Date.now();
     startTime = then;
@@ -149,11 +200,22 @@ function animate() {
     if (elapsed > fpsInterval) {
         then = now - (elapsed % fpsInterval);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(background, 0, 0, canvas.width, canvas.height + 90);
+        // ctx.drawImage(background, 0, 0, canvas.width, canvas.height + 90);
 
         drawSprite(playerSprite, player.width * player.frameX, player.height * player.frameY, player.width, player.height, player.x, player.y, player.width, player.height);
 
+        // increaseVelocity();
+        // changeHeight();
+
         movePlayer();
+        // if (player.jumped && player.onGround) {
+        //     jump();
+        // }
+        // if (player.inAir) {
+        //     fall();
+        // }
+        
+
         handlePlayerFrame();
 
         requestAnimationFrame(animate);
@@ -163,4 +225,4 @@ function animate() {
 
 fps = 10;
 
-startAnimating(fps);
+gameLoop(fps);

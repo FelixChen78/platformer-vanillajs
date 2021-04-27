@@ -1,15 +1,43 @@
 #canvas {
-    width: 800px;
+    width: 1000px;
     height: 500px;
     border: 5px solid rgb(6, 255, 122);
     background:  #ace4fa;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    /* margin-top:10px; */
+    margin-bottom: auto;
 }
+
 
 
 * {
-    background: aquamarine;
+    /* background: aquamarine; */
+    margin: 0;
+    padding: 0;
 }
+
+
+
+div.s2 {
+    background: firebrick;
+    padding-left: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+div.s3 {
+    background: blueviolet;
+    padding-left: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+
+/* #section1 {
+    width: 800;
+} */
