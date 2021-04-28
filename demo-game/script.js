@@ -34,10 +34,10 @@ const world = {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "chewie.png";
+playerSprite.src = "assets/chewie.png";
 
 const background = new Image();
-background.src = "background.jpg";
+background.src = "assets/background.jpg";
 
 /**
  * @function drawSprite
@@ -72,7 +72,7 @@ function movePlayer() {
         player.y -= player.velocity;
         player.frameY = 3;
         player.moving = true;
-        
+
     }
     if (keys["ArrowDown"] && player.y <= ground) {
         player.y += player.velocity;
@@ -128,7 +128,7 @@ function animate() {
         requestAnimationFrame(animate);
 
     }
-    
+
 }
 
 fps = 10;
