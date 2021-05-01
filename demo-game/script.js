@@ -23,7 +23,6 @@ const player = {
     frameX: 0,
     frameY: 0,
     velocity: 9,
-    mass: 1,
 };
 
 const playerSprite = new Image();
