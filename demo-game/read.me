@@ -27,27 +27,27 @@ DOCUMENTATION:
 
     GLOBAL VARIABLES:
 
-    @let fps is an {integer} that determines fps limit
-    @let fpsInterval is an {integer} that determines frames per second since last count
-    @let startTime is an {integer} that determines the new startTime for fps count
-    @let now is an {integer} that determines the current time using dateNow() function
-    @let then is an {integer} that determines the time left after calculating the difference between now and remainder of elapsed mod fpsInterval
+    @let fps is an {Int} that determines fps limit
+    @let fpsInterval is an {Int} that determines frames per second since last count
+    @let startTime is an {Int} that determines the new startTime for fps count
+    @let now is an {Int} that determines the current time using dateNow() function
+    @let then is an {Int} that determines the time left after calculating the difference between now and remainder of elapsed mod fpsInterval
     @let elapsed is an {integer} that determines the time elapsed by calculating the difference between now and then
-    @let spriteSheetWidth is an {integer} representing the entire width of the sprite sheet
-    @let spriteSheetHeight is an {integer} representing the entire height of the sprite sheet
-    @let spriteCol is an {integer} representing the number of columns in the sprite sheet
-    @let spriteRow is an {integer} representing the number of rows in the sprite sheet
-    @const ground is an {integer} determines the distance from the top of the canvas to where the ground is located
+    @let spriteSheetWidth is an {Int} representing the entire width of the sprite sheet
+    @let spriteSheetHeight is an {Int} representing the entire height of the sprite sheet
+    @let spriteCol is an {Int} representing the number of columns in the sprite sheet
+    @let spriteRow is an {Int} representing the number of rows in the sprite sheet
+    @const ground is an {Int} determines the distance from the top of the canvas to where the ground is located
     @const playerSprite is an {object} representing the player image 
     @const background is an {object} representing the background image
     @const player is an {object literal} representing the player in the game
-        @variable x is an {integer} representing the top left location x where the player is on the canvas
-        @variable y is an {integer} representing the top left location y where the player is on the canvas
-        @variable width is an {integer} representing the width of the player sprite
-        @variable height is an {integer} representing the height of the player sprite
-        @frameX is an {integer} used to determine the row on the player sprite sheet
-        @frameY is an {integer} used to determine the column on the player sprite sheet
-        @velocity is an {integer} representing the speed at which the player moves
+        @variable x is an {Int} representing the top left location x where the player is on the canvas
+        @variable y is an {Int} representing the top left location y where the player is on the canvas
+        @variable width is an {Int} representing the width of the player sprite
+        @variable height is an {Int} representing the height of the player sprite
+        @frameX is an {Int} used to determine the row on the player sprite sheet
+        @frameY is an {Int} used to determine the column on the player sprite sheet
+        @velocity is an {Int} representing the speed at which the player moves
 
 
     FUNCTIONS:
